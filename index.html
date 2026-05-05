@@ -76,7 +76,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
+const db = firebase.firestore();
 // ===== LOGIN =====
 function register() {
   let email = document.getElementById("email").value;
@@ -103,13 +103,53 @@ auth.onAuthStateChanged(user => {
 });
 
 // ===== CALENDARIO =====
+    auth.onAuthStateChanged(async user => {
+  if(user){
+
+    const snapshot = await db.collection("eventos")
+      .where("user", "==", user.uid)
+      .get();
+
+    snapshot.forEach(doc => {
+      let data = doc.data();
+
+      calendar.addEvent({
+        title: data.titulo,
+        start: data.inicio.toDate(),
+        end: data.fin.toDate()
+      });
+    });
+
+  }
+});
 document.addEventListener('DOMContentLoaded', function() {
   var calendar = new FullCalendar.Calendar(
     document.getElementById('calendar'),
     {
       initialView: 'timeGridWeek',
       selectable: true,
-      select: function(info) {
+      select: async function(info) {
+  let titulo = prompt("Evento:");
+
+  if(titulo && auth.currentUser){
+
+    await db.collection("eventos").add({
+      titulo: titulo,
+      inicio: info.start,
+      fin: info.end,
+      user: auth.currentUser.uid
+    });
+
+    calendar.addEvent({
+      title: titulo,
+      start: info.start,
+      end: info.end
+    });
+
+  } else {
+    alert("Debes iniciar sesión primero 😅");
+  }
+      }
         let titulo = prompt("Evento:");
         if(titulo){
           calendar.addEvent({
