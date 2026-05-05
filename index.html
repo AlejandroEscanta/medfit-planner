@@ -74,7 +74,21 @@ button {
 
 <header>🔥 MedFit Planner</header>
 
-<div class="container">
+<div class="container"> 
+    <div class="card">
+    <h3>🔐 Cuenta</h3>
+
+    <input id="email" placeholder="Correo" style="width:100%; padding:10px;">
+    <br><br>
+
+    <input id="password" type="password" placeholder="Contraseña" style="width:100%; padding:10px;">
+    <br><br>
+
+    <button onclick="register()">Registrarse</button>
+    <button onclick="login()">Entrar</button>
+
+    <p id="user"></p>
+</div>
 <div class="card">
     <h3>📅 Mi horario</h3>
     <div id="calendar"></div>
@@ -306,6 +320,37 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+    function register() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+    .then(() => {
+        alert("Usuario creado 🎉");
+    })
+    .catch(err => alert(err.message));
+}
+
+function login() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+        alert("Bienvenido 😎");
+    })
+    .catch(err => alert(err.message));
+}
+
+auth.onAuthStateChanged(user => {
+    if(user){
+        document.getElementById("user").innerText =
+        "Conectado: " + user.email;
+    } else {
+        document.getElementById("user").innerText =
+        "No has iniciado sesión";
+    }
+});
 </script>
 
 </body>
