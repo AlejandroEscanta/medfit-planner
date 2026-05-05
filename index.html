@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedFit Planner</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #0f172a;
+    color: white;
+}
+
+header {
+    background: #1e293b;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.container {
+    padding: 15px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #3b82f6;
+    color: white;
+    cursor: pointer;
+}
+
+.progress {
+    height: 10px;
+    background: #334155;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 10px;
+    background: #22c55e;
+    width: 0%;
+}
+
+.streak {
+    font-size: 18px;
+    color: orange;
+}
+
+.challenge {
+    margin: 10px 0;
+    background: #334155;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🔥 MedFit Planner</header>
+
+<div class="container">
+
+    <!-- RACHA -->
+    <div class="card">
+        <h3>Racha</h3>
+        <p class="streak">🔥 Días consecutivos: <span id="streak">0</span></p>
+        <button onclick="sumarRacha()">Cumplí hoy</button>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="card">
+        <h3>Progreso diario</h3>
+        <div class="progress">
+            <div class="progress-bar" id="barra"></div>
+        </div>
+        <p id="progresoTexto">0%</p>
+    </div>
+
+    <!-- RETOS -->
+    <div class="card">
+        <h3>Retos diarios IA</h3>
+        <div id="retos"></div>
+        <button onclick="generarRetos()">Generar retos</button>
+    </div>
+
+    <!-- POMODORO -->
+    <div class="card">
+        <h3>Estudio (Pomodoro)</h3>
+        <p id="timer">25:00</p>
+        <button onclick="startTimer()">Iniciar</button>
+    </div>
+
+    <!-- MÚSICA -->
+    <div class="card">
+        <h3>Música para estudiar</h3>
+        <iframe width="100%" height="80" 
+        src="https://www.youtube.com/embed/5qap5aO4i9A" 
+        frameborder="0"></iframe>
+    </div>
+
+    <!-- IA MOTIVACIONAL -->
+    <div class="card">
+        <h3>IA motivacional</h3>
+        <p id="mensajeIA">Presiona para recibir consejo</p>
+        <button onclick="mensajeIA()">Motívame</button>
+    </div>
+
+</div>
+
+<script>
+
+// ===== RACHA =====
+let streak = localStorage.getItem("streak") || 0;
+document.getElementById("streak").innerText = streak;
+
+function sumarRacha() {
+    streak++;
+    localStorage.setItem("streak", streak);
+    document.getElementById("streak").innerText = streak;
+}
+
+// ===== PROGRESO =====
+let progreso = 0;
+
+function actualizarProgreso() {
+    progreso += 20;
+    if(progreso > 100) progreso = 100;
+
+    document.getElementById("barra").style.width = progreso + "%";
+    document.getElementById("progresoTexto").innerText = progreso + "%";
+}
+
+// ===== RETOS IA =====
+const listaRetos = [
+    "Estudia 40 minutos sin usar TikTok",
+    "Completa 20 flashcards",
+    "Haz un resumen de biología",
+    "Repasa anatomía 30 min",
+    "Haz 15 preguntas de examen"
+];
+
+function generarRetos() {
+    let contenedor = document.getElementById("retos");
+    contenedor.innerHTML = "";
+
+    for(let i=0; i<3; i++){
+        let reto = listaRetos[Math.floor(Math.random()*listaRetos.length)];
+
+        let div = document.createElement("div");
+        div.className = "challenge";
+        div.innerHTML = reto + " <br><button onclick='completarReto()'>Completar</button>";
+
+        contenedor.appendChild(div);
+    }
+}
+
+function completarReto() {
+    actualizarProgreso();
+}
+
+// ===== POMODORO =====
+let tiempo = 1500;
+
+function startTimer() {
+    let intervalo = setInterval(() => {
+        let min = Math.floor(tiempo/60);
+        let sec = tiempo % 60;
+
+        document.getElementById("timer").innerText =
+        `${min}:${sec < 10 ? "0"+sec : sec}`;
+
+        tiempo--;
+
+        if(tiempo < 0){
+            clearInterval(intervalo);
+            alert("Descansa bro 😎");
+        }
+
+    },1000);
+}
+
+// ===== IA MOTIVACIONAL =====
+const mensajes = [
+    "Estás más cerca de ser doctor 💪",
+    "Disciplina > motivación",
+    "Hazlo aunque no tengas ganas",
+    "Un día más cuenta",
+    "Tu futuro paciente depende de esto"
+];
+
+function mensajeIA() {
+    let random = mensajes[Math.floor(Math.random()*mensajes.length)];
+    document.getElementById("mensajeIA").innerText = random;
+}
+
+// ===== DETECCIÓN PROCRASTINACIÓN (básico) =====
+let inactivo;
+
+document.onmousemove = resetTimer;
+document.onkeypress = resetTimer;
+
+function resetTimer() {
+    clearTimeout(inactivo);
+    inactivo = setTimeout(() => {
+        alert("⚠️ Estás procrastinando...");
+    }, 60000); // 1 minuto sin actividad
+}
+
+</script>
+
+</body>
+</html>
