@@ -1,72 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MedFit Planner</title>
 
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
 <style>
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
+    font-family: Arial;
     background: #0f172a;
     color: white;
+    margin: 0;
 }
-
 header {
     background: #1e293b;
     padding: 15px;
     text-align: center;
     font-size: 22px;
-    font-weight: bold;
 }
-
-.container {
-    padding: 15px;
-}
-
+.container { padding: 15px; }
 .card {
     background: #1e293b;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 15px;
 }
-
 button {
     padding: 10px;
     border: none;
     border-radius: 10px;
     background: #3b82f6;
     color: white;
-    cursor: pointer;
 }
-
-.progress {
-    height: 10px;
-    background: #334155;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 10px;
-    background: #22c55e;
-    width: 0%;
-}
-
-.streak {
-    font-size: 18px;
-    color: orange;
-}
-
-.challenge {
-    margin: 10px 0;
-    background: #334155;
-    padding: 10px;
-    border-radius: 10px;
-}
-
 </style>
 </head>
 
@@ -74,256 +43,41 @@ button {
 
 <header>🔥 MedFit Planner</header>
 
-<div class="container"> 
-    <div class="card">
-    <h3>🔐 Cuenta</h3>
+<div class="container">
 
-    <input id="email" placeholder="Correo" style="width:100%; padding:10px;">
-    <br><br>
-
-    <input id="password" type="password" placeholder="Contraseña" style="width:100%; padding:10px;">
-    <br><br>
-
-    <button onclick="register()">Registrarse</button>
-    <button onclick="login()">Entrar</button>
-
-    <p id="user"></p>
-</div>
 <div class="card">
-    <h3>📅 Mi horario</h3>
-    <div id="calendar"></div>
+<h3>🔐 Cuenta</h3>
+<input id="email" placeholder="Correo"><br><br>
+<input id="password" type="password" placeholder="Contraseña"><br><br>
+<button onclick="register()">Registrarse</button>
+<button onclick="login()">Entrar</button>
+<p id="user"></p>
 </div>
-    <!-- RACHA -->
-    <div class="card">
-        <h3>Racha</h3>
-        <p class="streak">🔥 Días consecutivos: <span id="streak">0</span></p>
-        <button onclick="sumarRacha()">Cumplí hoy</button>
-    </div>
+
 <div class="card">
-    <h3>🧠 Notebook IA</h3>
-    
-    <textarea id="textoIA" placeholder="Escribe o pega tus apuntes aquí..." 
-    style="width:100%; height:100px; border-radius:10px; padding:10px;"></textarea>
-    
-    <br><br>
-    
-    <button onclick="resumir()">Resumir</button>
-    
-    <p id="resultadoIA"></p>
-</div>
-    <!-- PROGRESO -->
-    <div class="card">
-        <h3>Progreso diario</h3>
-        <div class="progress">
-            <div class="progress-bar" id="barra"></div>
-        </div>
-        <p id="progresoTexto">0%</p>
-    </div>
-
-    <!-- RETOS -->
-    <div class="card">
-        <h3>Retos diarios IA</h3>
-        <div id="retos"></div>
-        <button onclick="generarRetos()">Generar retos</button>
-    </div>
-<div class="card">
-    <h3>📂 Mis apuntes</h3>
-    <input type="file" id="fileInput" multiple>
-    <ul id="fileList"></ul>
-</div>
-    <!-- POMODORO -->
-    <div class="card">
-        <h3>Estudio (Pomodoro)</h3>
-        <p id="timer">25:00</p>
-        <button onclick="startTimer()">Iniciar</button>
-    </div>
-
-    <!-- MÚSICA -->
-    <div class="card">
-        <h3>Música para estudiar</h3>
-        <iframe width="100%" height="80" 
-        src="https://www.youtube.com/embed/5qap5aO4i9A" 
-        frameborder="0"></iframe>
-    </div>
-
-    <!-- IA MOTIVACIONAL -->
-    <div class="card">
-        <h3>IA motivacional</h3>
-        <p id="mensajeIA">Presiona para recibir consejo</p>
-        <button onclick="mensajeIA()">Motívame</button>
-    </div>
-
+<h3>📅 Mi horario</h3>
+<div id="calendar"></div>
 </div>
 
-<script>
-
-// ===== RACHA =====
-let streak = localStorage.getItem("streak") || 0;
-document.getElementById("streak").innerText = streak;
-
-function sumarRacha() {
-    streak++;
-    localStorage.setItem("streak", streak);
-    document.getElementById("streak").innerText = streak;
-}
-
-// ===== PROGRESO =====
-let progreso = 0;
-
-function actualizarProgreso() {
-    progreso += 20;
-    if(progreso > 100) progreso = 100;
-
-    document.getElementById("barra").style.width = progreso + "%";
-    document.getElementById("progresoTexto").innerText = progreso + "%";
-}
-
-// ===== RETOS IA =====
-const listaRetos = [
-    "Estudia 40 minutos sin usar TikTok",
-    "Completa 20 flashcards",
-    "Haz un resumen de biología",
-    "Repasa anatomía 30 min",
-    "Haz 15 preguntas de examen"
-];
-
-function generarRetos() {
-    let contenedor = document.getElementById("retos");
-    contenedor.innerHTML = "";
-
-    for(let i=0; i<3; i++){
-        let reto = listaRetos[Math.floor(Math.random()*listaRetos.length)];
-
-        let div = document.createElement("div");
-        div.className = "challenge";
-        div.innerHTML = reto + " <br><button onclick='completarReto()'>Completar</button>";
-
-        contenedor.appendChild(div);
-    }
-}
-
-function completarReto() {
-    actualizarProgreso();
-}
-
-// ===== POMODORO =====
-let tiempo = 1500;
-
-function startTimer() {
-    let intervalo = setInterval(() => {
-        let min = Math.floor(tiempo/60);
-        let sec = tiempo % 60;
-
-        document.getElementById("timer").innerText =
-        `${min}:${sec < 10 ? "0"+sec : sec}`;
-
-        tiempo--;
-
-        if(tiempo < 0){
-            clearInterval(intervalo);
-            alert("Descansa bro 😎");
-        }
-
-    },1000);
-}
-
-// ===== IA MOTIVACIONAL =====
-const mensajes = [
-    "Estás más cerca de ser doctor 💪",
-    "Disciplina > motivación",
-    "Hazlo aunque no tengas ganas",
-    "Un día más cuenta",
-    "Tu futuro paciente depende de esto"
-];
-
-function mensajeIA() {
-    let random = mensajes[Math.floor(Math.random()*mensajes.length)];
-    document.getElementById("mensajeIA").innerText = random;
-}
-
-// ===== DETECCIÓN PROCRASTINACIÓN (básico) =====
-let inactivo;
-
-document.onmousemove = resetTimer;
-document.onkeypress = resetTimer;
-
-function resetTimer() {
-    clearTimeout(inactivo);
-    inactivo = setTimeout(() => {
-        alert("⚠️ Estás procrastinando...");
-    }, 60000); // 1 minuto sin actividad
-}
-const input = document.getElementById("fileInput");
-const list = document.getElementById("fileList");
-
-input.addEventListener("change", () => {
-    list.innerHTML = "";
-    for (let file of input.files) {
-        let li = document.createElement("li");
-        li.textContent = file.name;
-        list.appendChild(li);
-    }
-}); function resumir() {
-    let texto = document.getElementById("textoIA").value;
-
-    if(texto.trim() === ""){
-        alert("Escribe algo primero 😅");
-        return;
-    }
-
-    // Simulación de IA (resumen básico)
-    let resumen = texto.substring(0, 150);
-
-    document.getElementById("resultadoIA").innerText =
-    "🧠 Resumen IA: " + resumen + "...";
-}document.addEventListener('DOMContentLoaded', function() {
-
-  var calendarEl = document.getElementById('calendar');
-
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'timeGridWeek',
-    editable: true,
-    selectable: true,
-
-    select: function(info) {
-      let titulo = prompt("Nombre del evento:");
-
-      if(titulo){
-        calendar.addEvent({
-          title: titulo,
-          start: info.start,
-          end: info.end
-        });
-      }
-    }
-
-  });
-
-  calendar.render();
-
+</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
 
-// 🔥 CONFIG FIREBASE
+// ===== FIREBASE =====
 const firebaseConfig = {
   apiKey: "AIzaSyC9zj9mVnnYj5ouk5u22hB9VX_q9TKvVwM",
   authDomain: "medfit-planner.firebaseapp.com",
   projectId: "medfit-planner",
-  storageBucket: "medfit-planner.firebasestorage.app",
-  messagingSenderId: "980641070449",
-  appId: "1:980641070449:web:b0815c046bba15026b8ad0"
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 
-// 🔐 LOGIN
+// ===== LOGIN =====
 function register() {
   let email = document.getElementById("email").value;
   let password = document.getElementById("password").value;
@@ -347,6 +101,29 @@ auth.onAuthStateChanged(user => {
     document.getElementById("user").innerText = "Conectado: " + user.email;
   }
 });
+
+// ===== CALENDARIO =====
+document.addEventListener('DOMContentLoaded', function() {
+  var calendar = new FullCalendar.Calendar(
+    document.getElementById('calendar'),
+    {
+      initialView: 'timeGridWeek',
+      selectable: true,
+      select: function(info) {
+        let titulo = prompt("Evento:");
+        if(titulo){
+          calendar.addEvent({
+            title: titulo,
+            start: info.start,
+            end: info.end
+          });
+        }
+      }
+    }
+  );
+  calendar.render();
+});
+
 </script>
 
 </body>
