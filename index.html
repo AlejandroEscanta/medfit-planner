@@ -81,7 +81,18 @@ button {
         <p class="streak">🔥 Días consecutivos: <span id="streak">0</span></p>
         <button onclick="sumarRacha()">Cumplí hoy</button>
     </div>
-
+<div class="card">
+    <h3>🧠 Notebook IA</h3>
+    
+    <textarea id="textoIA" placeholder="Escribe o pega tus apuntes aquí..." 
+    style="width:100%; height:100px; border-radius:10px; padding:10px;"></textarea>
+    
+    <br><br>
+    
+    <button onclick="resumir()">Resumir</button>
+    
+    <p id="resultadoIA"></p>
+</div>
     <!-- PROGRESO -->
     <div class="card">
         <h3>Progreso diario</h3>
@@ -234,7 +245,20 @@ input.addEventListener("change", () => {
         li.textContent = file.name;
         list.appendChild(li);
     }
-});
+}); function resumir() {
+    let texto = document.getElementById("textoIA").value;
+
+    if(texto.trim() === ""){
+        alert("Escribe algo primero 😅");
+        return;
+    }
+
+    // Simulación de IA (resumen básico)
+    let resumen = texto.substring(0, 150);
+
+    document.getElementById("resultadoIA").innerText =
+    "🧠 Resumen IA: " + resumen + "...";
+}
 </script>
 
 </body>
