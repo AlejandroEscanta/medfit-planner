@@ -97,7 +97,11 @@ button {
         <div id="retos"></div>
         <button onclick="generarRetos()">Generar retos</button>
     </div>
-
+<div class="card">
+    <h3>📂 Mis apuntes</h3>
+    <input type="file" id="fileInput" multiple>
+    <ul id="fileList"></ul>
+</div>
     <!-- POMODORO -->
     <div class="card">
         <h3>Estudio (Pomodoro)</h3>
@@ -220,7 +224,17 @@ function resetTimer() {
         alert("⚠️ Estás procrastinando...");
     }, 60000); // 1 minuto sin actividad
 }
+const input = document.getElementById("fileInput");
+const list = document.getElementById("fileList");
 
+input.addEventListener("change", () => {
+    list.innerHTML = "";
+    for (let file of input.files) {
+        let li = document.createElement("li");
+        li.textContent = file.name;
+        list.appendChild(li);
+    }
+});
 </script>
 
 </body>
