@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+<head><link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MedFit Planner</title>
@@ -74,7 +75,10 @@ button {
 <header>🔥 MedFit Planner</header>
 
 <div class="container">
-
+<div class="card">
+    <h3>📅 Mi horario</h3>
+    <div id="calendar"></div>
+</div>
     <!-- RACHA -->
     <div class="card">
         <h3>Racha</h3>
@@ -258,7 +262,32 @@ input.addEventListener("change", () => {
 
     document.getElementById("resultadoIA").innerText =
     "🧠 Resumen IA: " + resumen + "...";
-}
+}document.addEventListener('DOMContentLoaded', function() {
+
+  var calendarEl = document.getElementById('calendar');
+
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'timeGridWeek',
+    editable: true,
+    selectable: true,
+
+    select: function(info) {
+      let titulo = prompt("Nombre del evento:");
+
+      if(titulo){
+        calendar.addEvent({
+          title: titulo,
+          start: info.start,
+          end: info.end
+        });
+      }
+    }
+
+  });
+
+  calendar.render();
+
+});
 </script>
 
 </body>
