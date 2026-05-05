@@ -287,7 +287,25 @@ input.addEventListener("change", () => {
 
   calendar.render();
 
-});
+});<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC9zj9mVnnYj5ouk5u22hB9VX_q9TKvVwM",
+  authDomain: "medfit-planner.firebaseapp.com",
+  projectId: "medfit-planner",
+  storageBucket: "medfit-planner.firebasestorage.app",
+  messagingSenderId: "980641070449",
+  appId: "1:980641070449:web:b0815c046bba15026b8ad0"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
 </script>
 
 </body>
